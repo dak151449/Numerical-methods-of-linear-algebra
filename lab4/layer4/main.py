@@ -205,10 +205,48 @@ def ShowCrcles(circles, lambds):
     plt.title("Gershgorin circles")
     plt.show()
 
+def check_viet(koef, roots):
+    l = [1]
+    l.append(koef)
+
+    check_sum = sum(roots)
+    
+    if abs(check_sum + koef[1]) > 0.001:
+         print(koef[1])
+         print("ERROR sum ", abs(check_sum + koef[0]))
+    print("Sum: ", check_sum, " -An-1: ", -koef[1])
+    check_mul = np.prod(np.array(roots))
+    if abs(check_mul - ((-1)**(len(roots)))*koef[-1]) > 0.001:
+        print("ERROR mul ",  abs(check_mul - ((-1)**(len(roots)))*koef[-1]))
+    print("Mul: ", check_mul, " (-1)**(n)A0: ", ((-1)**(len(roots)))*koef[-1])
+    return True
+
+def generSimmetricalMatrix(n):
+    matrix = [[0 for i in range(n)] for j in range(n)]
+    for i in range(n):
+        # matrix.append([])
+        # l = [0 for i in range(n)]
+        for j in range(n):
+            if i == j:
+                matrix[i][j] = random.uniform(10, -10)
+            elif matrix[i][j] == 0:
+                matrix[i][j] = random.uniform(10, -10)
+                matrix[j][i] = matrix[i][j]
+
+    return matrix
+
+
+
 def main():
-   # getRoots(-100, 100, f)
+
+    print(generSimmetricalMatrix(3))
+    
+
     ms =   [[[3, 4], [1, 2]], [[1,2,3],[4,5,6],[3,2,4]]]  #[[2.2, 1, 0.5, 2], [1, 1.3, 2, 1], [0.5, 2, 0.5, 1.6], [2, 1, 1.6, 2]]
-    #ms = [[[2.2, 1, 0.5, 2], [1, 1.3, 2, 1], [0.5, 2, 0.5, 1.6], [2, 1, 1.6, 2]]]
+    ms = [[[2.2, 1, 0.5, 2], [1, 1.3, 2, 1], [0.5, 2, 0.5, 1.6], [2, 1, 1.6, 2]]]
+
+    ms = [generSimmetricalMatrix(5)]
+
     for matrix in ms:
         t = getD(matrix, len(matrix)- 1, len(matrix)- 2, [])
         P, B_lists = t[0], t[1]
@@ -227,6 +265,8 @@ def main():
         funcShow(f, koef)
 
         ShowCrcles(Gershgorin(matrix), roots)
+        if check_viet(koef, roots):
+            print("Проверено теоремой Виета")
     
     return
 

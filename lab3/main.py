@@ -192,7 +192,7 @@ def vector_random(N, A, B):
 
 
 def main():
-  n = 10
+  n = 300
   print("\nrandom: ", n)
 
   x_graph = [ i for i in range(-40, 21)]# if i != 0]
