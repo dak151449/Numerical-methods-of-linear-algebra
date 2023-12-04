@@ -19,7 +19,12 @@ def normMatrix(A):
         s.append(row_sum)
     return max(s)
 
-
+def normaVect(v):
+    s = 0
+    for i in list(v):
+        s += i**2
+    return s**(1/2)
+    
 
 def norm(x_old, x_new):
     return np.linalg.norm(x_new - x_old)
@@ -60,21 +65,28 @@ def OneParameterMethod(A, t, f, eps, eigVal, xAnswer):
     x_old = np.array([0 for i in range(len(A))])
     # x_new = np.ones((len(A), 1))
     # print(A, '\n',f, '\n', x_old)
+    R0 = np.array(xAnswer) - x_old
+    R_back = R0
     it = 0
     while True:
         x_new = G@x_old + f
         x_new = np.array(x_new)[0]
 
-        # if np.linalg.norm(x_new - xAnswer) < eigvalsPmax*np.linalg.norm(xAnswer - x_old):
-        #     print("Условие сходимости для тау не выполнилось")
-            # return np.inf
-            
-
-        if norm(x_old, x_new) < eps:
+        if normaVect(x_old - x_new) < eps:
             break
         x_old = x_new
         it += 1
+
     
+
+    for i in range(it):
+        R_back = R0
+        R0 = np.array(G @ R0)[0]
+        if np.round(normaVect(R0)**2, 9) > np.round(eigvalsPmax**2 * normaVect(R_back)**2,9) + 1e-4:
+            print("Условие сходимости для тау не выполнилось", np.round(np.linalg.norm(R0)**2, 10) -  np.round(eigvalsPmax**2 * np.linalg.norm(R_back)**2, 10), i, it)
+            break
+        
+
     print(x_new)
     return it
 
@@ -83,7 +95,7 @@ def lab7():
     random.seed(100)
     eps = 1e-13
     n = 4
-    A = generSimmetricalMatrix(n, 1, 2) #matrix_random(n, 10, 20, 1)
+    A = generSimmetricalMatrix(n, 1, 2)
     f = [random.uniform(10, 20) for i in range(n)]
     X, _ = Zeidal(A, f, eps)
     print(A, '\n')
@@ -116,9 +128,12 @@ def lab7():
     index = it_range[::-1].index(min(it_range))
     print("fnd: ", t_range[-1 - index])
     print("opt: ", t_opt)
+    print("delta: ", abs(t_range[-1 - index] - t_opt))
     print(X)
     print(OneParameterMethod(A, t_opt, f, eps, roots, X), " ", min(it_range))
     plt.plot(t_range, it_range)
+    plt.scatter([t_range[-1 - index]], [min(it_range)])
+    plt.scatter([t_opt], [OneParameterMethod(A, t_opt, f, eps, roots, X)])
     plt.show()
 
 lab7()

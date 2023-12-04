@@ -192,6 +192,44 @@ def vector_random(N, A, B):
 
 
 def main():
+  R = 1
+  R12 = 2*R
+  R26 = R
+  R23 = R
+  R13 = R
+  R36 = R
+
+  M = [[0, 0, 0, 1],
+      [1, 0, 0, -1],
+      [1 / R12, -1 / R12 - 1/R26 - 1/R23 - 1/R23, 2 / R23, 1 / R26],
+      [1 / R13, 2 / R23, -1 / R13 - 1/R36 - 1/R23 - 1/R23, 1 / R36]]
+  # print(M)
+  # M = [[0, 0, 0, 1],
+  #      [1, 0, 0, -1],
+  #      [1 / R, -4 / R, 2 / R, 1 / R],
+  #      [1 / R, 2 / R, -4 / R, 1 / R]]
+  # print(M)
+  f = [0, 9, 0, 0]
+
+  x_rows = GaussRows(M, f)
+
+  s = [1, 2, 3, 6]
+  index1 = 0
+  for x1 in x_rows:
+    index2 = 0
+    # print(x1)
+    for x2 in x_rows:
+      # print(x2)
+      if index2 == index1:
+        index2 += 1
+        continue
+      print("I"+str(s[index1])+str(s[index2]), abs(x2 - x1) / R)
+      index2 += 1
+  index1 += 1
+
+  print(x_rows)
+  return 
+
   n = 300
   print("\nrandom: ", n)
 
